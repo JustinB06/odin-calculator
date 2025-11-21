@@ -1,0 +1,17 @@
+5. Create the functions that populate the 
+display when you click the digit buttons. 
+You should store the content of the display 
+(the number) in a variable for use in the 
+next step.
+    - Add an event listener to the parent
+    of the digit/number buttons, making
+    use of event bubbling, so that the
+    buttons know that they've been clicked.
+    
+    - Create a function that handles changing
+    the calculator display when a button has 
+    been clicked.
+        - Might split this into 2 functions:
+            1. Handle updating the display itself.
+            2. Interpret how the display needs to 
+            change.
