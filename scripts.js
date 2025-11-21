@@ -8,7 +8,7 @@ const DEFAULT_DISPLAY_NUMBER = "00000000";
 let num1, operator, num2;
 
 let displayNumber = DEFAULT_DISPLAY_NUMBER;
-// let displayNumberRef = document.querySelector("#display");
+let displayNumberRef = document.querySelector("#display");
 
 setupEventListeners();
 
@@ -52,6 +52,25 @@ function operate(num1, operator, num2) {
   }
 }
 
+// ============================================================
+
+/* 
+  Update the UI display number using the value of
+  the internal display number tracker.
+*/
+function updateDisplayNumber() {
+  displayNumberRef.textContent = displayNumber;
+}
+
+/* 
+  Clear the UI display number by making the 
+  internal display number tracker an empty string.
+*/
+function clearDisplayNumber() {
+  displayNumber = "";
+  updateDisplayNumber();
+}
+
 /* 
   Function will add numbers to the display number
   in the calculator UI.  
@@ -60,19 +79,16 @@ function operate(num1, operator, num2) {
   the display number internally.
 */
 function addToDisplayNumber(valueToAdd) {
-  let displayNumberRef = document.querySelector("#display");
-
   /* 
     If the displayNumber is at its default, we
     have to clear it before we add numbers to it. 
   */
   if (displayNumber === DEFAULT_DISPLAY_NUMBER) {
-    displayNumber = "";
-    displayNumberRef.textContent = displayNumber;
+    clearDisplayNumber();
   }
 
   displayNumber += valueToAdd;
-  displayNumberRef.textContent = displayNumber;
+  updateDisplayNumber();
 }
 
 /* 
@@ -105,9 +121,15 @@ function setupEventListeners(event) {
     */
     let target = event.target;
 
-    if (target.className === "number") {
-      console.log(event.target.textContent);
-      return addToDisplayNumber(event.target.textContent);
+    /* 
+      We decide what function will handle the 
+      event based on the event target.
+    */
+    if (target.id === "clear-operator") {
+    } else if (target.id === "equals-operator") {
+    } else if (target.className === "number") {
+      addToDisplayNumber(event.target.textContent);
+    } else if (target.className === "operator") {
     }
   });
 }
