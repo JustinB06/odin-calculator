@@ -6,6 +6,9 @@
 */
 let num1, operator, num2;
 
+let displayNumber = "00000000";
+let displayNumberRef = document.querySelector("#display");
+
 /* 4 functions to perform the basic operations */
 function add(num1, num2) {
   return num1 + num2;
