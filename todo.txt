@@ -11,4 +11,21 @@ populate the display, so once operate has been
 called, update the display with the result of the 
 operation.
 
-This is the hardest part of the project. You need to figure out how to store all the values and call the operate function with them. Don’t feel bad if it takes you a while to figure out the logic.
+This is the hardest part of the project. You need 
+to figure out how to store all the values and 
+call the operate function with them. Don’t feel 
+bad if it takes you a while to figure out the logic.
+==================================================
+
+- Storing a number will be done by: a storeNumber()
+function. When an operator button of +/-/*/'/'
+is pressed, a number will be stored.
+    - But how will we know when to call operate() 
+    vs when to call storeNumber()?
+        - Actually, we are storing the operator as 
+        well. So we'll check if storedNum1 && 
+        operator && storedNum2 exist. If they do 
+        then we perform an operation.
+            - If they don't, then we must store
+            what we're missing.
+

@@ -4,8 +4,8 @@
    Three variables that store the parts of 
    the operation: 
 */
-const DEFAULT_DISPLAY_NUMBER = "00000000";
-let num1, operator, num2;
+const DEFAULT_DISPLAY_NUMBER = "0";
+let storedNum1, operator, storedNum2;
 
 let displayNumber = DEFAULT_DISPLAY_NUMBER;
 let displayNumberRef = document.querySelector("#display");
@@ -67,7 +67,7 @@ function updateDisplayNumber() {
   internal display number tracker an empty string.
 */
 function clearDisplayNumber() {
-  displayNumber = "";
+  displayNumber = "0";
   updateDisplayNumber();
 }
 
@@ -81,14 +81,19 @@ function clearDisplayNumber() {
 function addToDisplayNumber(valueToAdd) {
   /* 
     If the displayNumber is at its default, we
-    have to clear it before we add numbers to it. 
+    have to make it an empty string before we add 
+    numbers to it. Otherwise, we will be appending 
+    numbers to "0".
+      - For instance, adding "1" to "0" becomes "01".
   */
   if (displayNumber === DEFAULT_DISPLAY_NUMBER) {
-    clearDisplayNumber();
+    displayNumber = "";
+    displayNumber += valueToAdd;
+    updateDisplayNumber();
+  } else {
+    displayNumber += valueToAdd;
+    updateDisplayNumber();
   }
-
-  displayNumber += valueToAdd;
-  updateDisplayNumber();
 }
 
 /* 
@@ -109,9 +114,9 @@ function addToDisplayNumber(valueToAdd) {
 
 */
 function setupEventListeners(event) {
-  let gridRef = document.querySelector("#grid");
+  let calculatorContainerRef = document.querySelector("#calculator-container");
 
-  gridRef.addEventListener("click", (event) => {
+  calculatorContainerRef.addEventListener("click", (event) => {
     /* 
       Note that event.target is a Node
       type reference. 
@@ -125,10 +130,13 @@ function setupEventListeners(event) {
       We decide what function will handle the 
       event based on the event target.
     */
+    console.log(target);
+
     if (target.id === "clear-operator") {
+      clearDisplayNumber();
     } else if (target.id === "equals-operator") {
     } else if (target.className === "number") {
-      addToDisplayNumber(event.target.textContent);
+      addToDisplayNumber(target.textContent);
     } else if (target.className === "operator") {
     }
   });
