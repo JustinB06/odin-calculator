@@ -87,10 +87,19 @@ function addToDisplayNumber(valueToAdd) {
       - For instance, adding "1" to "0" becomes "01".
   */
   if (displayNumber === DEFAULT_DISPLAY_NUMBER) {
-    displayNumber = "";
+    if (valueToAdd === ".") {
+      displayNumber = "0";
+    } else {
+      displayNumber = "";
+    }
+
     displayNumber += valueToAdd;
     updateDisplayNumber();
-  } else {
+  } else if (!(valueToAdd === "." && displayNumber.includes("."))) {
+    /* 
+      Ensure that a second decimal in not added
+      to the displayed UI number.
+    */
     displayNumber += valueToAdd;
     updateDisplayNumber();
   }
