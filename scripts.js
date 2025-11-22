@@ -1,5 +1,5 @@
-/* An operation will be made up of: num1, 
-   operator, then num2. 
+/* An operation will be made up of: storedNum1, 
+   operator, then storedNum2. 
    
    Three variables that store the parts of 
    the operation: 
@@ -15,41 +15,53 @@ setupEventListeners();
 // ============================================================
 
 /* 4 functions to perform the basic operations */
-function add(num1, num2) {
-  return num1 + num2;
+function add(storedNum1, storedNum2) {
+  return String(Number(storedNum1) + Number(storedNum2));
 }
 
-function subtract(num1, num2) {
-  return num1 - num2;
+function subtract(storedNum1, storedNum2) {
+  return String(Number(storedNum1) - Number(storedNum2));
 }
 
-function multiply(num1, num2) {
-  return num1 * num2;
+function multiply(storedNum1, storedNum2) {
+  return storedNum1 * storedNum2;
 }
 
-function divide(num1, num2) {
-  return num1 / num2;
+function divide(storedNum1, storedNum2) {
+  return storedNum1 / storedNum2;
 }
 
 /* 
   Function to delegate the calling of
   individual operator functions.
 */
-function operate(num1, operator, num2) {
+function operate() {
   switch (operator) {
     case "+":
-      return add(num1, num2);
-    //   break;
+      displayNumber = add(storedNum1, storedNum2);
+      updateDisplayNumber();
+      // console.log(displayNumber);
+      break;
     case "-":
-      return subtract(num1, num2);
-    //   break;
+      displayNumber = subtract(storedNum1, storedNum2);
+      updateDisplayNumber();
+      // console.log(displayNumber);
+      break;
     case "*":
-      return multiply(num1, num2);
-    //   break;
+      operationResult = multiply(storedNum1, storedNum2);
+      break;
     case "/":
-      return divide(num1, num2);
-    //   break;
+      operationResult = divide(storedNum1, storedNum2);
+      break;
   }
+  /* 
+    Resetting variables, allowing further
+    operations to continue 
+  */
+  storedNum1 = displayNumber;
+  storedNum2 = undefined;
+  operator = undefined;
+  displayNumber = "";
 }
 
 // ============================================================
@@ -73,7 +85,7 @@ function clearDisplayNumber() {
 
 /* 
   Function will add numbers to the display number
-  in the calculator UI.  
+  in the calculator's UI.  
 
   We also update a displayNumber variable to track
   the display number internally.
@@ -103,6 +115,42 @@ function addToDisplayNumber(valueToAdd) {
     displayNumber += valueToAdd;
     updateDisplayNumber();
   }
+}
+
+/* 
+  Function will store the current display number 
+  in the calculator's UI, as well as the operator
+  if one was pressed.
+
+  If 2 numbers are stored and an operator is 
+  stored, the operation will be performed using
+  operate().
+*/
+function storeDisplayNumber(operatorInputted) {
+  if (!storedNum1) {
+    storedNum1 = displayNumber;
+    clearDisplayNumber();
+  } else if (!storedNum2) {
+    storedNum2 = displayNumber;
+    clearDisplayNumber();
+  }
+
+  if (!operator) {
+    operator = operatorInputted;
+  }
+
+  console.log("before");
+  console.log(storedNum1);
+  console.log(storedNum2);
+  console.log(operator);
+
+  if (storedNum1 && storedNum2 && operator) {
+    operate(storedNum1, operator, storedNum2);
+  }
+  console.log("after");
+  console.log(storedNum1);
+  console.log(storedNum2);
+  console.log(operator);
 }
 
 /* 
@@ -147,6 +195,7 @@ function setupEventListeners(event) {
     } else if (target.className === "number") {
       addToDisplayNumber(target.textContent);
     } else if (target.className === "operator") {
+      storeDisplayNumber(target.textContent);
     }
   });
 }
