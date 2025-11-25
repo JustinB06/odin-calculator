@@ -143,7 +143,49 @@ function operate() {
  *
  * @returns {void}
  */
+/* TODO I wonder if its possible to have this
+function to be solely responsible for modifying
+the displayNumber. 
+
+This would include 
+updateDisplayNumber(DEFAULT_DISPLAY_NUMBER)
+becoming possible, to remove clearDisplayNumber().
+
+Could I do it using optional/default parameters?*/
 function updateDisplayNumber() {
+  displayNumberRef.textContent = displayNumber;
+}
+
+/**
+ * Will add a new digit to {@link displayNumber}
+ * and/or "clear" {@link displayNumber}.
+ * @param {Boolean} toClearDisplayNumber - Signals if {@link displayNumber} should be set to {@link DEFAULT_DISPLAY_NUMBER}.
+ * @param {String} digitToAdd - The new digit to add to {@link displayNumber}.
+ * @param {String} initialValueToSet - The new value to set {@link displayNumber} to.
+ */
+/* TODO Attempting to do the above, making a 
+single function that will be responsible for
+updating the display number in all places. */
+function attemptMultipleUpdateDisplayNumber(
+  toClearDisplayNumber = false,
+  digitToAdd = "",
+  initialValueToSet = displayNumber
+) {
+  // Set displayNumber to a new value
+  displayNumber = initialValueToSet;
+
+  // Add a new digit to displayNumber
+  displayNumber += digitToAdd;
+
+  /* 
+    Clear the displayNumber and update the 
+    calculator UI display number.
+  */
+  if (toClearDisplayNumber) {
+    displayNumber = DEFAULT_DISPLAY_NUMBER;
+    console.log("clear");
+  }
+
   displayNumberRef.textContent = displayNumber;
 }
 
@@ -174,7 +216,7 @@ function clearDisplayNumber() {
  * @param {String} valueToAdd - the numerical digit to add to {@link displayNumber}.
  * @returns {void}
  */
-function addToDisplayNumber(valueToAdd) {
+function addToDisplayNumber(digitToAdd) {
   /* 
     If the displayNumber is at its default, we
     have to make it an empty string before we add 
@@ -183,21 +225,24 @@ function addToDisplayNumber(valueToAdd) {
       - For instance, adding "1" to "0" becomes "01".
   */
   if (displayNumber === DEFAULT_DISPLAY_NUMBER) {
-    if (valueToAdd === ".") {
-      displayNumber = "0";
+    if (digitToAdd === ".") {
+      // displayNumber = "0";
+      attemptMultipleUpdateDisplayNumber(false, digitToAdd, "0");
     } else {
-      displayNumber = "";
+      // displayNumber = "";
+      attemptMultipleUpdateDisplayNumber(false, digitToAdd, "");
     }
 
-    displayNumber += valueToAdd;
-    updateDisplayNumber();
-  } else if (!(valueToAdd === "." && displayNumber.includes("."))) {
+    /* displayNumber += digitToAdd;
+    updateDisplayNumber(); */
+  } else if (!(digitToAdd === "." && displayNumber.includes("."))) {
     /* 
       Ensure that a second decimal in not added
       to the displayed UI number.
     */
-    displayNumber += valueToAdd;
-    updateDisplayNumber();
+    /* displayNumber += digitToAdd;
+    updateDisplayNumber(); */
+    attemptMultipleUpdateDisplayNumber(false, digitToAdd);
   }
 }
 
@@ -294,7 +339,8 @@ function setupEventListener() {
     console.log(target);
 
     if (target.id === "clear-operator") {
-      clearDisplayNumber();
+      // clearDisplayNumber();
+      attemptMultipleUpdateDisplayNumber(true);
     } else if (target.id === "equals-operator") {
     } else if (target.className === "number") {
       addToDisplayNumber(target.textContent);
