@@ -1,40 +1,110 @@
-/* An operation will be made up of: storedNum1, 
-   operator, then storedNum2. 
-   
-   Three variables that store the parts of 
-   the operation: 
-*/
+/* Set the event listener for the calculator UI */
+setupEventListener();
+
+/**
+ * Is the default number that will be displayed
+ * on the calculator UI display number.
+ * @type {String}
+ * @global
+ */
 const DEFAULT_DISPLAY_NUMBER = "0";
-let storedNum1, operator, storedNum2;
 
+/**
+ * Stores the first operand inputted by
+ * the user, to take part in a calculation.
+ * @type {String}
+ * @global
+ */
+let storedNum1;
+
+/**
+ * Stores the second operand inputted by
+ * the user, to take part in a calculation.
+ * @type {String}
+ * @global
+ */
+let storedNum2;
+
+/**
+ * Stores the operator inputted by the
+ * user, to take part in a calculation.
+ * @type {String}
+ * @global
+ */
+let operator;
+
+/**
+ * Stores the number that will be displayed as
+ * the calculator UI display number.
+ * @type {String}
+ * @global
+ */
 let displayNumber = DEFAULT_DISPLAY_NUMBER;
-let displayNumberRef = document.querySelector("#display");
 
-setupEventListeners();
+/**
+ * Stores a reference to the calculator UI
+ * display number div element.
+ * @type {Node}
+ * @global
+ */
+let displayNumberRef = document.querySelector("#display");
 
 // ============================================================
 
 /* 4 functions to perform the basic operations */
+/**
+ * @param {String} storedNum1 - The first operand number.
+ * @param {String} storedNum2 - The second operand number.
+ * @returns {String} The sum of the two operands.
+ */
 function add(storedNum1, storedNum2) {
   return String(Number(storedNum1) + Number(storedNum2));
 }
 
+/**
+ * @param {String} storedNum1 - The first operand number.
+ * @param {String} storedNum2 - The second operand number.
+ * @returns {String} The difference of the two operands.
+ */
 function subtract(storedNum1, storedNum2) {
   return String(Number(storedNum1) - Number(storedNum2));
 }
 
+/**
+ * @param {String} storedNum1 - The first operand number.
+ * @param {String} storedNum2 - The second operand number.
+ * @returns {String} The product of the two operands.
+ */
+// TODO
 function multiply(storedNum1, storedNum2) {
   return storedNum1 * storedNum2;
 }
 
+/**
+ * @param {String} storedNum1 - The first operand number.
+ * @param {String} storedNum2 - The second operand number.
+ * @returns {String} The quotient of the two operands.
+ */
+// TODO
 function divide(storedNum1, storedNum2) {
   return storedNum1 / storedNum2;
 }
 
-/* 
-  Function to delegate the calling of
-  individual operator functions.
-*/
+/**
+ * Performs a calculator operation and updates the
+ * calculator UI display number.
+ *
+ * The operation is performed using {@link add},
+ * {@link subtract}, {@link multiply},
+ * or {@link divide}. Utilizes global variables
+ * {@link storedNum1}, {@link storedNum2}, and
+ * {@link operator}.
+ *
+ * The update is performed using
+ * {@link updateDisplayNumber()}.
+ *
+ * @returns {void}
+ */
 function operate() {
   switch (operator) {
     case "+":
@@ -64,32 +134,46 @@ function operate() {
   displayNumber = "";
 }
 
-// ============================================================
-
-/* 
-  Update the UI display number using the value of
-  the internal display number tracker.
-*/
+/**
+ * Update the calculator UI display number using
+ * the value of {@link displayNumber}.
+ *
+ * Utilizes {@link displayNumberRef} to perform
+ * the update.
+ *
+ * @returns {void}
+ */
 function updateDisplayNumber() {
   displayNumberRef.textContent = displayNumber;
 }
 
-/* 
-  Clear the UI display number by making the 
-  internal display number tracker an empty string.
-*/
+/**
+ * Clear the calculator UI display number by
+ * setting {@link displayNumber} to the
+ * {@link DEFAULT_DISPLAY_NUMBER}, then updating
+ * the UI.
+ *
+ * Utilizes {@link updateDisplayNumber()} to
+ * perform the update.
+ *
+ * @returns {void}
+ */
 function clearDisplayNumber() {
-  displayNumber = "0";
+  displayNumber = DEFAULT_DISPLAY_NUMBER;
   updateDisplayNumber();
 }
 
-/* 
-  Function will add numbers to the display number
-  in the calculator's UI.  
-
-  We also update a displayNumber variable to track
-  the display number internally.
-*/
+/**
+ * Add a numerical digit to the calculator UI's
+ * existing display number value
+ * {@link displayNumber}, then update the UI.
+ *
+ * Utilizes {@link updateDisplayNumber()} to update
+ * the UI.
+ *
+ * @param {String} valueToAdd - the numerical digit to add to {@link displayNumber}.
+ * @returns {void}
+ */
 function addToDisplayNumber(valueToAdd) {
   /* 
     If the displayNumber is at its default, we
@@ -117,15 +201,25 @@ function addToDisplayNumber(valueToAdd) {
   }
 }
 
-/* 
-  Function will store the current display number 
-  in the calculator's UI, as well as the operator
-  if one was pressed.
-
-  If 2 numbers are stored and an operator is 
-  stored, the operation will be performed using
-  operate().
-*/
+/**
+ * The function will:
+ * 1. Store the value of the calculator's UI display
+ * number {@link displayNumber} in either
+ * {@link storedNum1} or {@link storedNum2}.
+ *
+ * 2. Store the type of operator inputted by the
+ * user in {@link operatorInputted}.
+ *
+ * 3. If both {@link storedNum1} and {@link storedNum2}
+ * have a stored value, and {@link operatorInputted}
+ * also has a stored value, then the relevant
+ * operation will be performed using
+ * {@link operate()}.
+ *
+ *
+ * @param {String} operatorInputted - The type of operator button pressed by the user in the calculator UI.
+ * @returns {void}
+ */
 function storeDisplayNumber(operatorInputted) {
   if (!storedNum1) {
     storedNum1 = displayNumber;
@@ -170,7 +264,17 @@ function storeDisplayNumber(operatorInputted) {
     is one we care about.
 
 */
-function setupEventListeners(event) {
+
+/**
+ * Setup an event listener for the calculator UI
+ * parent #grid of buttons.
+ *
+ * Using event bubbling, the listener will catch
+ * click events on child buttons. The handler
+ * function for each click event varies depending
+ * on the button type.
+ */
+function setupEventListener() {
   let calculatorContainerRef = document.querySelector("#calculator-container");
 
   calculatorContainerRef.addEventListener("click", (event) => {
