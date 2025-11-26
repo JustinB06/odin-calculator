@@ -27,11 +27,19 @@ let storedNum2;
 
 /**
  * Stores the operator inputted by the
- * user, to take part in a calculation.
+ * user, to take part in the next calculation.
  * @type {String}
  * @global
  */
 let operator;
+
+/**
+ * Stores an operator inputted by the
+ * user to take part in a future calculation.
+ * @type {String}
+ * @global
+ */
+let bufferedOperator;
 
 /**
  * Stores the number that will be displayed as
@@ -109,8 +117,9 @@ function operate() {
   switch (operator) {
     case "+":
       displayNumber = add(storedNum1, storedNum2);
-      updateDisplayNumber();
+      // updateDisplayNumber();
       // console.log(displayNumber);
+      modifyDisplayNumber();
       break;
     case "-":
       displayNumber = subtract(storedNum1, storedNum2);
@@ -131,7 +140,7 @@ function operate() {
   storedNum1 = displayNumber;
   storedNum2 = undefined;
   operator = undefined;
-  displayNumber = "";
+  // displayNumber = "";
 }
 
 /**
@@ -157,21 +166,38 @@ function updateDisplayNumber() {
 }
 
 /**
- * Will add a new digit to {@link displayNumber}
- * and/or "clear" {@link displayNumber}.
+ * 1. Will either "clear", add a new digit to, or
+ * set the value of {@link displayNumber}.
+ *
+ * 2. Will set the calculator UI display
+ * number to the value of {@link displayNumber}.
+ *
  * @param {Boolean} toClearDisplayNumber - Signals if {@link displayNumber} should be set to {@link DEFAULT_DISPLAY_NUMBER}.
  * @param {String} digitToAdd - The new digit to add to {@link displayNumber}.
  * @param {String} initialValueToSet - The new value to set {@link displayNumber} to.
+ * @returns {void}
  */
 /* TODO Attempting to do the above, making a 
 single function that will be responsible for
 updating the display number in all places. */
-function attemptMultipleUpdateDisplayNumber(
+function modifyDisplayNumber(
   toClearDisplayNumber = false,
   digitToAdd = "",
   initialValueToSet = displayNumber
 ) {
-  // Set displayNumber to a new value
+  /* 
+    Sets displayNumber to a new value. 
+    
+    It must be the first step performed because the
+    default value of initialValueToSet will be 
+    the current value of displayNumber upon 
+    calling this function. 
+
+    initialValueToSet will not be dynamically 
+    updated to the actual value of displayNumber, 
+    and will get in the way of other steps in 
+    the function. 
+  */
   displayNumber = initialValueToSet;
 
   // Add a new digit to displayNumber
@@ -179,7 +205,7 @@ function attemptMultipleUpdateDisplayNumber(
 
   /* 
     Clear the displayNumber and update the 
-    calculator UI display number.
+    calculator UI display number. 
   */
   if (toClearDisplayNumber) {
     displayNumber = DEFAULT_DISPLAY_NUMBER;
@@ -227,10 +253,10 @@ function addToDisplayNumber(digitToAdd) {
   if (displayNumber === DEFAULT_DISPLAY_NUMBER) {
     if (digitToAdd === ".") {
       // displayNumber = "0";
-      attemptMultipleUpdateDisplayNumber(false, digitToAdd, "0");
+      modifyDisplayNumber(false, digitToAdd, "0");
     } else {
       // displayNumber = "";
-      attemptMultipleUpdateDisplayNumber(false, digitToAdd, "");
+      modifyDisplayNumber(false, digitToAdd, "");
     }
 
     /* displayNumber += digitToAdd;
@@ -242,7 +268,7 @@ function addToDisplayNumber(digitToAdd) {
     */
     /* displayNumber += digitToAdd;
     updateDisplayNumber(); */
-    attemptMultipleUpdateDisplayNumber(false, digitToAdd);
+    modifyDisplayNumber(false, digitToAdd);
   }
 }
 
@@ -268,10 +294,12 @@ function addToDisplayNumber(digitToAdd) {
 function storeDisplayNumber(operatorInputted) {
   if (!storedNum1) {
     storedNum1 = displayNumber;
-    clearDisplayNumber();
+    // clearDisplayNumber();
+    modifyDisplayNumber(true);
   } else if (!storedNum2) {
     storedNum2 = displayNumber;
-    clearDisplayNumber();
+    // clearDisplayNumber();
+    modifyDisplayNumber(true);
   }
 
   if (!operator) {
@@ -283,13 +311,23 @@ function storeDisplayNumber(operatorInputted) {
   console.log(storedNum2);
   console.log(operator);
 
-  if (storedNum1 && storedNum2 && operator) {
+  /* if (storedNum1 && storedNum2 && operator) {
     operate(storedNum1, operator, storedNum2);
-  }
+  } */
   console.log("after");
   console.log(storedNum1);
   console.log(storedNum2);
   console.log(operator);
+}
+
+function operatorButtonClickEventHandler(operatorInputted) {
+  // First we store the number that the user inputted
+  storeDisplayNumber(operatorInputted);
+
+  // Second, we perform an operation if possible
+  if (storedNum1 && storedNum2 && operator) {
+    operate(storedNum1, operator, storedNum2);
+  }
 }
 
 /* 
@@ -340,7 +378,7 @@ function setupEventListener() {
 
     if (target.id === "clear-operator") {
       // clearDisplayNumber();
-      attemptMultipleUpdateDisplayNumber(true);
+      modifyDisplayNumber(true);
     } else if (target.id === "equals-operator") {
     } else if (target.className === "number") {
       addToDisplayNumber(target.textContent);
