@@ -151,11 +151,26 @@ function operate() {
     Resetting variables, allowing further
     operations to continue 
   */
-  storedNum1 = displayNumber;
+  /* 
+    If the user clicks the "=" button, we don't
+    automatically use the result of the 
+    calculation in the next calculation.
+
+    If the user doesn't click the "=" button,
+    then they clicked "+", "-", "*", or "/". So
+    we must use the result in the calculation. 
+  */
+  if (bufferedOperator === "=") {
+    storedNum1 = undefined;
+    operator = undefined;
+  } else {
+    storedNum1 = displayNumber;
+    operator = bufferedOperator;
+  }
+  // storedNum1 = displayNumber; // The calculation result will be used in the next calculation.
   storedNum2 = undefined;
-  operator = bufferedOperator;
+  // operator = bufferedOperator; // The next calculation will use the buffered inputted operator.
   bufferedOperator = undefined;
-  // displayNumber = "";
 
   console.log("after operation");
   console.log(storedNum1);
@@ -418,8 +433,8 @@ function setupEventListener() {
     if (target.id === "clear-operator") {
       // clearDisplayNumber();
       modifyDisplayNumber(true);
-    } else if (target.id === "equals-operator") {
-    } else if (target.className === "number") {
+    } /* else if (target.id === "equals-operator") {
+    } */ else if (target.className === "number") {
       addToDisplayNumber(target.textContent);
     } else if (target.className === "operator") {
       // storeDisplayNumber(target.textContent);
