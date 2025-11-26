@@ -178,29 +178,6 @@ function operate() {
   console.log(operator);
   console.log(bufferedOperator);
 }
-
-/**
- * Update the calculator UI display number using
- * the value of {@link displayNumber}.
- *
- * Utilizes {@link displayNumberRef} to perform
- * the update.
- *
- * @returns {void}
- */
-/* TODO I wonder if its possible to have this
-function to be solely responsible for modifying
-the displayNumber. 
-
-This would include 
-updateDisplayNumber(DEFAULT_DISPLAY_NUMBER)
-becoming possible, to remove clearDisplayNumber().
-
-Could I do it using optional/default parameters?*/
-function updateDisplayNumber() {
-  displayNumberRef.textContent = displayNumber;
-}
-
 /**
  * 1. Will either "clear", add a new digit to, or
  * set the value of {@link displayNumber}.
@@ -249,22 +226,6 @@ function modifyDisplayNumber(
   }
 
   displayNumberRef.textContent = displayNumber;
-}
-
-/**
- * Clear the calculator UI display number by
- * setting {@link displayNumber} to the
- * {@link DEFAULT_DISPLAY_NUMBER}, then updating
- * the UI.
- *
- * Utilizes {@link updateDisplayNumber()} to
- * perform the update.
- *
- * @returns {void}
- */
-function clearDisplayNumber() {
-  displayNumber = DEFAULT_DISPLAY_NUMBER;
-  updateDisplayNumber();
 }
 
 /**
