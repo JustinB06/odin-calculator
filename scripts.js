@@ -123,14 +123,17 @@ function operate() {
       break;
     case "-":
       displayNumber = subtract(storedNum1, storedNum2);
-      updateDisplayNumber();
+      // updateDisplayNumber();
       // console.log(displayNumber);
+      modifyDisplayNumber();
       break;
     case "*":
-      operationResult = multiply(storedNum1, storedNum2);
+      displayNumber = multiply(storedNum1, storedNum2);
+      modifyDisplayNumber();
       break;
     case "/":
-      operationResult = divide(storedNum1, storedNum2);
+      displayNumber = divide(storedNum1, storedNum2);
+      modifyDisplayNumber();
       break;
   }
   /* 
@@ -139,8 +142,15 @@ function operate() {
   */
   storedNum1 = displayNumber;
   storedNum2 = undefined;
-  operator = undefined;
+  operator = bufferedOperator;
+  bufferedOperator = undefined;
   // displayNumber = "";
+
+  console.log("after operation");
+  console.log(storedNum1);
+  console.log(storedNum2);
+  console.log(operator);
+  console.log(bufferedOperator);
 }
 
 /**
@@ -304,20 +314,18 @@ function storeDisplayNumber(operatorInputted) {
 
   if (!operator) {
     operator = operatorInputted;
+  } else if (!bufferedOperator) {
+    bufferedOperator = operatorInputted;
   }
-
-  console.log("before");
-  console.log(storedNum1);
-  console.log(storedNum2);
-  console.log(operator);
 
   /* if (storedNum1 && storedNum2 && operator) {
     operate(storedNum1, operator, storedNum2);
   } */
-  console.log("after");
+  console.log("after storage");
   console.log(storedNum1);
   console.log(storedNum2);
   console.log(operator);
+  console.log(bufferedOperator);
 }
 
 function operatorButtonClickEventHandler(operatorInputted) {
@@ -383,7 +391,8 @@ function setupEventListener() {
     } else if (target.className === "number") {
       addToDisplayNumber(target.textContent);
     } else if (target.className === "operator") {
-      storeDisplayNumber(target.textContent);
+      // storeDisplayNumber(target.textContent);
+      operatorButtonClickEventHandler(target.textContent);
     }
   });
 }
