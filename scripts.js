@@ -42,6 +42,17 @@ let operator;
 let bufferedOperator;
 
 /**
+ * Signals if an operator button was just clicked.
+ * Will be used to ensure that the result of an
+ * operation remains on the calculator UI
+ * display, instead of being set to
+ * {@link DEFAULT_DISPLAY_NUMBER}.
+ * @type {Boolean}
+ * @global
+ */
+let operatorWasClicked = false;
+
+/**
  * Stores the number that will be displayed as
  * the calculator UI display number.
  * @type {String}
@@ -246,13 +257,30 @@ function clearDisplayNumber() {
  * existing display number value
  * {@link displayNumber}, then update the UI.
  *
- * Utilizes {@link updateDisplayNumber()} to update
- * the UI.
+ * Utilizes {@link modifyDisplayNumber()} to update
+ * the UI. Utilizes {@link operatorWasClicked} to
+ * avoid appending a digit to the result of a
+ * previous operation.
  *
  * @param {String} valueToAdd - the numerical digit to add to {@link displayNumber}.
  * @returns {void}
  */
 function addToDisplayNumber(digitToAdd) {
+  /* 
+    We do not clear the calculator UI display 
+    number when we perform an operation. Thus, the 
+    result of the previous operation will appear on 
+    the UI.
+
+    Thus, to avoid appending a digit to the 
+    result, we set the calculator UI display 
+    number to DEFAULT_DISPLAY_NUMBER
+  */
+  if (operatorWasClicked) {
+    modifyDisplayNumber(true);
+    operatorWasClicked = false;
+  }
+
   /* 
     If the displayNumber is at its default, we
     have to make it an empty string before we add 
@@ -305,11 +333,11 @@ function storeDisplayNumber(operatorInputted) {
   if (!storedNum1) {
     storedNum1 = displayNumber;
     // clearDisplayNumber();
-    modifyDisplayNumber(true);
+    // modifyDisplayNumber(true);
   } else if (!storedNum2) {
     storedNum2 = displayNumber;
     // clearDisplayNumber();
-    modifyDisplayNumber(true);
+    // modifyDisplayNumber(true);
   }
 
   if (!operator) {
@@ -329,6 +357,9 @@ function storeDisplayNumber(operatorInputted) {
 }
 
 function operatorButtonClickEventHandler(operatorInputted) {
+  // We signal that an operator was just clicked
+  operatorWasClicked = true;
+
   // First we store the number that the user inputted
   storeDisplayNumber(operatorInputted);
 
