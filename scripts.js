@@ -159,30 +159,33 @@ function operate() {
   switch (operator) {
     case "+":
       displayNumber = add(storedNum1, storedNum2);
-      // updateDisplayNumber();
-      // console.log(displayNumber);
-      // modifyDisplayNumber();
       break;
     case "-":
       displayNumber = subtract(storedNum1, storedNum2);
-      // updateDisplayNumber();
-      // console.log(displayNumber);
-      // modifyDisplayNumber();
       break;
     case "*":
       displayNumber = multiply(storedNum1, storedNum2);
-      // modifyDisplayNumber();
       break;
     case "/":
       displayNumber = divide(storedNum1, storedNum2);
-      // modifyDisplayNumber();
       break;
   }
   modifyDisplayNumber();
-  /* 
-    Resetting variables, allowing further
-    operations to continue 
-  */
+  clearData();
+}
+
+/**
+ * Either resets global variables to undefined, or
+ * stores previous variable values to be used in
+ * future calculations.
+ *
+ * This is usually performed
+ * after {@link operate()} executes, or
+ * the calculator UI's "CLEAR" button is clicked.
+ *
+ * @returns {void}
+ */
+function clearData() {
   /* 
     If the user clicks the "=" button, we don't
     automatically use the result of the 
@@ -199,17 +202,17 @@ function operate() {
     storedNum1 = displayNumber;
     operator = bufferedOperator;
   }
-  // storedNum1 = displayNumber; // The calculation result will be used in the next calculation.
+
   storedNum2 = undefined;
-  // operator = bufferedOperator; // The next calculation will use the buffered inputted operator.
   bufferedOperator = undefined;
 
-  console.log("after operation");
+  console.log("after clearData() executes");
   console.log(storedNum1);
   console.log(storedNum2);
   console.log(operator);
   console.log(bufferedOperator);
 }
+
 /**
  * 1. Will either "clear", add a new digit to, or
  * set the value of {@link displayNumber}.
@@ -410,8 +413,22 @@ function operatorButtonClickEventHandler(operatorClicked, operatorClickedRef) {
   // We signal that an operator was just clicked
   operatorWasClicked = true;
 
-  // First we store the number that the user inputted
-  storeDisplayNumber(operatorClicked);
+  /* 
+    If the "CLEAR" button operator was clicked, we
+    do not store any data, we just clear data 
+    and the display number.
+
+    Otherwise, we do store data.
+  */
+  if (operatorClicked === "CLEAR") {
+    modifyDisplayNumber(true);
+    clearData();
+  } else {
+    storeDisplayNumber(operatorClicked);
+  }
+
+  /* // First we store the number that the user inputted
+  storeDisplayNumber(operatorClicked); */
 
   // Second, we delegate the setting of the button's style.
   setOperatorButtonStyle(operatorClickedRef);
@@ -468,11 +485,12 @@ function setupEventListener() {
     */
     console.log(target);
 
-    if (target.id === "clear-operator") {
+    /* if (target.id === "clear-operator") {
       // clearDisplayNumber();
       modifyDisplayNumber(true);
-    } /* else if (target.id === "equals-operator") {
-    } */ else if (target.classList.contains("number")) {
+      clearData(); 
+    }*/ /* else if (target.id === "equals-operator") {
+    } else */ if (target.classList.contains("number")) {
       addToDisplayNumber(target.textContent);
     } else if (target.classList.contains("operator")) {
       // storeDisplayNumber(target.textContent);
