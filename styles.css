@@ -48,3 +48,11 @@
 
   padding: 10px;
 }
+
+/* 
+  Used to style a currently selected operator
+  button 
+*/
+.selected-operator {
+  background-color: yellow;
+}

@@ -63,10 +63,43 @@ let displayNumber = DEFAULT_DISPLAY_NUMBER;
 /**
  * Stores a reference to the calculator UI
  * display number div element.
+ *
+ * It will be used to set the text on that
+ * div element.
  * @type {Node}
  * @global
  */
 let displayNumberRef = document.querySelector("#display");
+
+/**
+ * Stores a reference to a calculator UI
+ * operator button element.
+ *
+ * It will be used to add CSS style to the
+ * operator button that the user clicks.
+ * @type {Node}
+ * @global
+ */
+let operatorButtonRef;
+
+/**
+ * Stores a buffered reference to a calculator UI
+ * operator button element.
+ *
+ * When an operator button reference is already
+ * stored in {@link operatorButtonRef}, this
+ * variable will store a second operator
+ * button reference for a button that was
+ * clicked by the user.
+ *
+ * It will be used to remove CSS styling
+ * from {@link operatorButtonRef}, and add
+ * CSS styling to {@link bufferedOperatorRef}.
+ *
+ * @type {Node}
+ * @global
+ */
+let bufferedOperatorButtonRef;
 
 // ============================================================
 
@@ -94,9 +127,8 @@ function subtract(storedNum1, storedNum2) {
  * @param {String} storedNum2 - The second operand number.
  * @returns {String} The product of the two operands.
  */
-// TODO
 function multiply(storedNum1, storedNum2) {
-  return storedNum1 * storedNum2;
+  return String(Number(storedNum1) * Number(storedNum2));
 }
 
 /**
@@ -104,9 +136,8 @@ function multiply(storedNum1, storedNum2) {
  * @param {String} storedNum2 - The second operand number.
  * @returns {String} The quotient of the two operands.
  */
-// TODO
 function divide(storedNum1, storedNum2) {
-  return storedNum1 / storedNum2;
+  return String(Number(storedNum1) / Number(storedNum2));
 }
 
 /**
@@ -130,23 +161,24 @@ function operate() {
       displayNumber = add(storedNum1, storedNum2);
       // updateDisplayNumber();
       // console.log(displayNumber);
-      modifyDisplayNumber();
+      // modifyDisplayNumber();
       break;
     case "-":
       displayNumber = subtract(storedNum1, storedNum2);
       // updateDisplayNumber();
       // console.log(displayNumber);
-      modifyDisplayNumber();
+      // modifyDisplayNumber();
       break;
     case "*":
       displayNumber = multiply(storedNum1, storedNum2);
-      modifyDisplayNumber();
+      // modifyDisplayNumber();
       break;
     case "/":
       displayNumber = divide(storedNum1, storedNum2);
-      modifyDisplayNumber();
+      // modifyDisplayNumber();
       break;
   }
+  modifyDisplayNumber();
   /* 
     Resetting variables, allowing further
     operations to continue 
@@ -293,19 +325,19 @@ function addToDisplayNumber(digitToAdd) {
  * {@link storedNum1} or {@link storedNum2}.
  *
  * 2. Store the type of operator inputted by the
- * user in {@link operatorInputted}.
+ * user in {@link operatorClicked}.
  *
  * 3. If both {@link storedNum1} and {@link storedNum2}
- * have a stored value, and {@link operatorInputted}
+ * have a stored value, and {@link operatorClicked}
  * also has a stored value, then the relevant
  * operation will be performed using
  * {@link operate()}.
  *
  *
- * @param {String} operatorInputted - The type of operator button pressed by the user in the calculator UI.
+ * @param {String} operatorClicked - The type of operator button pressed by the user in the calculator UI.
  * @returns {void}
  */
-function storeDisplayNumber(operatorInputted) {
+function storeDisplayNumber(operatorClicked) {
   if (!storedNum1) {
     storedNum1 = displayNumber;
     // clearDisplayNumber();
@@ -317,9 +349,9 @@ function storeDisplayNumber(operatorInputted) {
   }
 
   if (!operator) {
-    operator = operatorInputted;
+    operator = operatorClicked;
   } else if (!bufferedOperator) {
-    bufferedOperator = operatorInputted;
+    bufferedOperator = operatorClicked;
   }
 
   /* if (storedNum1 && storedNum2 && operator) {
@@ -332,14 +364,59 @@ function storeDisplayNumber(operatorInputted) {
   console.log(bufferedOperator);
 }
 
-function operatorButtonClickEventHandler(operatorInputted) {
+// TODO complete
+function setOperatorButtonStyle(operatorClickedRef) {
+  /* 
+    Second, we store a reference to the operator 
+    button that was clicked.
+
+    If we have not yet stored a reference, then 
+    we store it in operatorButtonRef. Otherwise,
+    we use bufferedOperatorButtonRef.
+  */
+  if (!operatorButtonRef) {
+    operatorButtonRef = operatorClickedRef;
+  } else {
+    bufferedOperatorButtonRef = operatorClickedRef;
+  }
+
+  /* 
+    If we are not yet tracking two operator buttons,
+    then we must be tracking only one. Thus, we 
+    style that button.
+    
+    If we are tracking two operator buttons, then
+    we must remove the style from the previously 
+    clicked button. 
+      - So we add style to recently clicked button. 
+
+      - Lastly, we start tracking the buffered 
+      operator reference only, as it's the recently 
+      clicked button.
+  */
+  if (!bufferedOperatorButtonRef) {
+    operatorButtonRef.classList.add("selected-operator");
+  } else {
+    operatorButtonRef.classList.remove("selected-operator");
+    bufferedOperatorButtonRef.classList.add("selected-operator");
+
+    operatorButtonRef = bufferedOperatorButtonRef;
+    bufferedOperatorButtonRef = undefined;
+  }
+}
+
+// TODO Add jsdoc
+function operatorButtonClickEventHandler(operatorClicked, operatorClickedRef) {
   // We signal that an operator was just clicked
   operatorWasClicked = true;
 
   // First we store the number that the user inputted
-  storeDisplayNumber(operatorInputted);
+  storeDisplayNumber(operatorClicked);
 
-  // Second, we perform an operation if possible
+  // Second, we delegate the setting of the button's style.
+  setOperatorButtonStyle(operatorClickedRef);
+
+  // Third, we perform an operation if possible
   if (storedNum1 && storedNum2 && operator) {
     operate(storedNum1, operator, storedNum2);
   }
@@ -395,11 +472,11 @@ function setupEventListener() {
       // clearDisplayNumber();
       modifyDisplayNumber(true);
     } /* else if (target.id === "equals-operator") {
-    } */ else if (target.className === "number") {
+    } */ else if (target.classList.contains("number")) {
       addToDisplayNumber(target.textContent);
-    } else if (target.className === "operator") {
+    } else if (target.classList.contains("operator")) {
       // storeDisplayNumber(target.textContent);
-      operatorButtonClickEventHandler(target.textContent);
+      operatorButtonClickEventHandler(target.textContent, target);
     }
   });
 }
