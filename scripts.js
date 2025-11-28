@@ -442,6 +442,21 @@ function operatorButtonClickEventHandler(operatorClicked, operatorClickedRef) {
   }
 }
 
+function backspaceOperatorClickhandler() {
+  displayNumber = displayNumber.slice(0, displayNumber.length - 1);
+
+  /* 
+    If the displayNumber will become "" after 
+    the slice, use modifyDisplayNumber(true) to
+    set displayNumber to "DEFAULT_DISPLAY_NUMBER".
+  */
+  if (displayNumber.length < 1) {
+    modifyDisplayNumber(true);
+  } else {
+    modifyDisplayNumber();
+  }
+}
+
 /* 
   Function to setup initial event listeners
   
@@ -459,7 +474,6 @@ function operatorButtonClickEventHandler(operatorClicked, operatorClickedRef) {
     is one we care about.
 
 */
-
 /**
  * Setup an event listener for the calculator UI
  * parent #grid of buttons.
@@ -495,6 +509,8 @@ function setupEventListener() {
     }*/ /* else if (target.id === "equals-operator") {
     } else */ if (target.classList.contains("number")) {
       addToDisplayNumber(target.textContent);
+    } else if (target.id === "backspace-operator") {
+      backspaceOperatorClickhandler();
     } else if (target.classList.contains("operator")) {
       // storeDisplayNumber(target.textContent);
       operatorButtonClickEventHandler(target.textContent, target);

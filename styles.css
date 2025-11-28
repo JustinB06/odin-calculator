@@ -30,6 +30,11 @@
   font-size: 24px;
 }
 
+#secondary-operators {
+  display: flex;
+  gap: 10px;
+}
+
 #grid {
   font-size: 20px;
 }
