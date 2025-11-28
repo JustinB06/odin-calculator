@@ -137,6 +137,9 @@ function multiply(storedNum1, storedNum2) {
  * @returns {String} The quotient of the two operands.
  */
 function divide(storedNum1, storedNum2) {
+  if (operator === "/" && storedNum2 === "0") {
+    alert("You can't divide by 0 >;)");
+  }
   return String(Number(storedNum1) / Number(storedNum2));
 }
 
